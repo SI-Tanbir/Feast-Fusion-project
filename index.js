@@ -68,7 +68,7 @@ async function run() {
 
       const email= req.body.email;
       if(email){
-        const find = await usersColl.find(query).toArray()
+        const find = await usersColl.find(email).toArray()
         return res.send("user already exist")
 
       }
