@@ -67,17 +67,27 @@ async function run() {
     app.post('/users',async(req,res)=>{
 
       const email= req.body.email;
-      if(email){
-        const find = await usersColl.find(email).toArray()
-        return res.send("user already exist")
+      const query={email:email}
+      if (email) {
+        // Construct the query to search by email
+        const query = { email: email }; 
+        
+        // Find if the email already exists
+        const find = await usersColl.find(query).toArray();
+
+        if (find.length > 0) { // Check if any results are returned
+            return res.send("User already exists");
+        }
 
       }
+
      
-        const addEmail= await usersColl.insert(req.body)
+        const addEmail= await usersColl.insertOne(req.body)
         res.send("user succesfuly added")
       
 
     })
+  
     app.get("/menu", async (req, res) => {
       const query = { email: req.body.email };
       const result = await menuColl.find(query).toArray();
