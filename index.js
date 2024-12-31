@@ -33,6 +33,7 @@ const client = new MongoClient(uri, {
 //adding database collection
 const menuColl = client.db("feastfusion").collection("menu");
 const CartColl = client.db("feastfusion").collection("carts");
+const usersColl = client.db("feastfusion").collection("users");
 
 let clientPromise;
 
@@ -44,10 +45,13 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await clientPromise;
     // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
+    
+    // await client.db("admin").command({ ping: 1 });
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
     );
+
+    
 
     app.get("/", (req, res) => {
       res.send("Hello World!");
@@ -60,6 +64,20 @@ async function run() {
       res.send("shafik is testing food");
     });
 
+    app.post('/users',async(req,res)=>{
+
+      const email= req.body.email;
+      if(email){
+        const find = await usersColl.find(query).toArray()
+        return res.send("user already exist")
+
+      }
+     
+        const addEmail= await usersColl.insert(req.body)
+        res.send("user succesfuly added")
+      
+
+    })
     app.get("/menu", async (req, res) => {
       const query = { email: req.body.email };
       const result = await menuColl.find(query).toArray();
